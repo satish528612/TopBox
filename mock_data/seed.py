@@ -1,7 +1,16 @@
 import random
 from datetime import datetime
+from mock_data.my_mongo import Mongo
 
-from app.helpers import mongo_client
+db_global = None
+
+
+def mongo_client():
+    global db_global
+    if db_global is None:
+        db_global = Mongo()
+    return db_global
+
 
 db = mongo_client()
 names = db.list_collection_names()
@@ -37,7 +46,8 @@ first_names = ['John', 'Sally', 'Matt', 'Anthony', 'Stuart', 'Samantha', 'Jose',
 last_names = ['Smith', 'Jameson', 'Alexander', 'Ford', 'Montgomery', 'Newman', 'Trevino', 'Erickson']
 sentiment_types = ['Negative', 'Neutral', 'Positive']
 
-for engagement_id in [client1_engagement1, client1_engagement2, client2_engagement1, client2_engagement2, client2_engagement3]:
+for engagement_id in [client1_engagement1, client1_engagement2, client2_engagement1, client2_engagement2,
+                      client2_engagement3]:
     for _ in range(50):
         random_sentiment = random.choice(sentiment_types)
         random_day = random.randint(1, 29)
@@ -60,3 +70,6 @@ for engagement_id in [client1_engagement1, client1_engagement2, client2_engageme
             }
         }
         db.interactions.insert_one(interaction)
+
+
+# db.interactions.print_all()
